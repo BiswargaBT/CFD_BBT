@@ -1,4 +1,7 @@
+#solved with Gauss_seidal
 import numpy as np
+import time as time
+import matplotlib.pyplot as plt #we aare importing the pyplot module of the matplotlib library
 lx=0.01 #[m]
 ly=0.015 #[mm]
 nx=41
@@ -28,9 +31,12 @@ for i in range(nx):
 T_old=np.zeros((nx,ny))
 
 #iterations
+start_time=time.time()
 res=1.0
 count=0
 final=(10)**(-3)
+residuals=[]
+iterations=[]
 while res>final:
     T_new=np.zeros((nx,ny))
     sum1=0
@@ -62,11 +68,46 @@ while res>final:
             T_old[i][j]=T_new[i][j]
             
     res=sum1
+    #we are importing all the values of residuals and iteratin counts into a list so that plot can be made using matplotlib
+    residuals.append(res)
+    iterations.append(count)
     count=count + 1
     
+end_time=time.time()
+    
 #for displaying values
-print(f"{'x':<20}{'y':<20}{'T_old':<25}")
-for i in range(nx):
-    for j in range(ny):
-        print(f"{x[i][j]:<20}{y[i][j]:<20}{T_old[i][j]:<25}")
+#print(f"{'x':<20}{'y':<20}{'T_old':<25}")
+#for i in range(nx):
+    #for j in range(ny):
+        #print(f"{x[i][j]:<20}{y[i][j]:<20}{T_old[i][j]:<25}")
+        
+#for making a .dat file for post processing work
+with open("temp_field2.dat","w") as f:
+    f.write('VARIABLES: "X", "Y", "T"\n')
+    f.write('ZONE: I = {nx}, J = {ny}')
+    for i in range(nx):
+        for j in range(ny):
+            f.write(f"{x[i][j]} {y[i][j]} {T_old[i][j]}\n")
+show=True#in order to show the graph we are using this variable and since we have to show the graph, thus we are assigning it a TRUE value            
+plt.figure()#starting of a matlab figure
+plt.plot(iterations,residuals)#what to plot, what values on x axis and what values on the y axis
+plt.xlabel("Iterations")#title of the x axis
+plt.ylabel("Residuals")#title of the y axis
+plt.title("Residuals v/s Iterations (Gauss-Seidal)")#title of the entire plot
+plt.yscale("log")#we are using log scale because the residual decreases exponentially, so we are using the exponential scale
+plt.grid(True)#this is used to state whether grid is neccessary or not... if yes than true if not then false
+plt.show()#end of the matlab figure
 
+
+print(end_time-start_time, "seconds to converge")
+print("The final residual is ", res)
+print("The number of iterations required to converge is ", count)
+      
+      
+      
+      
+      
+      
+      
+      
+  
