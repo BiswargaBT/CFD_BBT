@@ -2,8 +2,8 @@
 import numpy as np
 import time as time
 import matplotlib.pyplot as plt #we aare importing the pyplot module of the matplotlib library
-lx=0.01 #[m]
-ly=0.015 #[mm]
+lx=1.0 #[mm]
+ly=1.5 #[mm]
 nx=41
 ny=41
 dx=lx/(nx-1)
@@ -34,7 +34,7 @@ T_old=np.zeros((nx,ny))
 start_time=time.time()
 res=1.0
 count=0
-final=(10)**(-3)
+final=(10)**(-6)
 residuals=[]
 iterations=[]
 while res>final:
@@ -61,11 +61,8 @@ while res>final:
         for j in range(1,ny-1):
             T_new[i][j]=(a_s*T_old[i][j-1] + a_w*T_old[i-1][j] + a_e*T_old[i+1][j] + a_n*T_old[i][j+1] + alpha)/a_p
             sum1=sum1+abs(T_new[i][j] - T_old[i][j])
-            
-    #point jacobi updation
-    for i in range(1,nx-1):
-        for j in range(1,ny-1):
             T_old[i][j]=T_new[i][j]
+        
             
     res=sum1
     #we are importing all the values of residuals and iteratin counts into a list so that plot can be made using matplotlib
